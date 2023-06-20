@@ -1,0 +1,17 @@
+scikit-learn>=0.23
+pandas
+seaborn
+matplotlib
+joblib
+numpy
+ibm_watson_machine_learning
+pyyaml
+pytest
+pytest-dependency
+pre-commit
+osmnx
+geojson
+h3
+contextily
+folium
+plotly
