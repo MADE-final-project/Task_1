@@ -92,14 +92,18 @@ df_d = pd.merge(df_c, df_landuse, left_on='osmid', right_on='osmid')
 df_e = pd.merge(df_d, df_building, left_on='osmid', right_on='osmid')
 df_f = pd.merge(df_e, df_railway, left_on='osmid', right_on='osmid')
 
-df1.to_frame("ids").reset_index()
-print(df1)
+#df1.to_frame("ids").reset_index()
 
-df2 = df1[["osmid","h3_cell"]]
+df0 =  pd.DataFrame(df1).reset_index()
 
-df3 = pd.merge(df1, df2, left_on='osmid', right_on='osmid')
+df2 = df0[["osmid","h3_cell"]]
 
-df_emb = df.groupby('h3_cell').sum()
+df3 = pd.merge(df_f, df2, left_on='osmid', right_on='osmid')
+
+print(type(df0))
+print(df3)
+
+df_emb = df3.groupby('h3_cell').sum()
 
 df_emb.drop('osmid', inplace=True, axis=1)
 
