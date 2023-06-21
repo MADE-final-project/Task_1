@@ -37,12 +37,31 @@ df1['geometry'] = df1['geometry'].centroid
 interests_df = pd.read_csv("./data/stupino_interests.csv")
 locs_df = pd.read_csv("./data/stupino_locs.csv")
 
+print(locs_df.columns)
+
 
 H3_res = 9  # размер гексагона [1 .. 15] чем больше, тем меньше площадь
 
 
 def geo_to_h3(row):
     return h3.geo_to_h3(lat=row.geometry.y, lng=row.geometry.x, resolution=H3_res)
+
+
+def geo_to_h3_interests(row):
+    return h3.geo_to_h3(lat=row.lat, lng=row.lon, resolution=H3_res)
+
+locs_df['h3_cell'] = locs_df.progress_apply(geo_to_h3_interests, axis=1)
+locs_df_g = (locs_df
+             .groupby('h3_cell')
+             .id
+             .agg(list)
+             .to_frame("ids")
+             .reset_index())
+# Let's count each points inside the hexagon
+locs_df_g['interests_count'] = (locs_df_g['ids']
+                      .progress_apply(lambda ignition_ids: len(ignition_ids)))          
+                      
+df4 = locs_df_g[['interests_count','h3_cell']]
 
 
 df1['h3_cell'] = df1.apply(geo_to_h3, axis=1)
@@ -99,31 +118,20 @@ df0 =  pd.DataFrame(df1).reset_index()
 df2 = df0[["osmid","h3_cell"]]
 
 df3 = pd.merge(df_f, df2, left_on='osmid', right_on='osmid')
-
-print(type(df0))
-print(df3)
+print("1")
 
 df_emb = df3.groupby('h3_cell').sum()
+print("2")
 
 df_emb.drop('osmid', inplace=True, axis=1)
 
+print("3")      
       
-      
-locs_df['h3_cell'] = locs_df.progress_apply(geo_to_h3, axis=1)
 
-locs_df_g = (locs_df
-             .groupby('h3_cell')
-             .id
-             .agg(list)
-             .to_frame("ids")
-             .reset_index())
-# Let's count each points inside the hexagon
-locs_df_g['interests_count'] = (locs_df_g['ids']
-                      .progress_apply(lambda ignition_ids: len(ignition_ids)))                
-                      
-df4 = locs_df_g[['interests_count','h3_cell']]
 
 df_emb.merge(df4, on='h3_cell')
+
+print("8")
 
 df_emb.to_csv('./data/hex_emb.csv')
                       
