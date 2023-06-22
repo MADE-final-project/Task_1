@@ -1,0 +1,5 @@
+.idea
+.venv
+yaparser/geckodriver.log
+yaparser/*.csv
+yaparser/__pycache__
