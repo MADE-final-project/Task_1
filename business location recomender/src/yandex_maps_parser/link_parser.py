@@ -110,6 +110,6 @@ if __name__ == "__main__":
     for type_org in ['cafe']:
         for district in ['Ступино']:
             sleep(1)
-            driver = webdriver.Chrome("/usr/bin/chromedriver")
+            driver = webdriver.Chrome(executable_path = "/usr/bin/chromedriver")
             grabber = LinksCollector(driver)
             grabber.run(city="Россия", district=district, type_org_ru=type_org_mapping[type_org], type_org=type_org)
