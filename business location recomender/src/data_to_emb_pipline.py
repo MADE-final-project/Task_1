@@ -58,6 +58,18 @@ locs_df_g = (locs_df
              .to_frame("ids")
              .reset_index())
 # Let's count each points inside the hexagon
+
+
+ids = locs_df_g[locs_df_g["h3_cell"] == h3_cell_from_center]["ids"].to_list()[0]
+df = interests_df[[user for user in interests_df.columns if user.startswith("interests_") or "id" in user]]
+df = df[df.id.isin(ids)]
+df = df[[user for user in df.columns if user.startswith("interests_")]].apply(sum)
+# df = df.drop("id", axis=1).apply(sum)
+print(df)
+# al
+
+
+
 locs_df_g['interests_count'] = (locs_df_g['ids']
                       .progress_apply(lambda ignition_ids: len(ignition_ids)))          
                       
